@@ -1,0 +1,40 @@
+name: Update casks
+
+# The version and the checksum are the only things that change between
+# releases, so nobody needs to be here for it. Runs daily, and on demand.
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Follow the latest pdf-next release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          tag=$(gh release view --repo ricardofrantz/pdf-next --json tagName --jq '.tagName')
+          version=${tag#v}
+          current=$(sed -n 's/^  version "\(.*\)"$/\1/p' Casks/pdf-next.rb)
+          if [ "$version" = "$current" ]; then
+            echo "pdf-next $version is already the one in the cask."
+            exit 0
+          fi
+          url="https://github.com/ricardofrantz/pdf-next/releases/download/${tag}/pdf-next_${version}_universal.dmg"
+          curl -fsSL -o dmg "$url"
+          sha=$(sha256sum dmg | cut -d' ' -f1)
+          rm dmg
+          sed -i "s/^  version \".*\"$/  version \"${version}\"/" Casks/pdf-next.rb
+          sed -i "s/^  sha256 \".*\"$/  sha256 \"${sha}\"/" Casks/pdf-next.rb
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -am "pdf-next ${version}"
+          git push
