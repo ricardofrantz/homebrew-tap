@@ -13,6 +13,16 @@ anything downloaded and refuses the first launch. Homebrew used to offer
 help you past a Gatekeeper check any more. Run it again after an upgrade,
 which installs a fresh copy.
 
+Already have the app from the `.dmg`? Homebrew stops rather than overwrite
+something it did not put there. Add `--adopt` to take over the copy that is
+already in `/Applications`, or delete it first.
+
+If Homebrew asks you to trust this tap before it will read the cask:
+
+```sh
+brew trust --cask ricardofrantz/tap/pdf-next
+```
+
 ## What is here
 
 - **[pdf-next](https://github.com/ricardofrantz/pdf-next)** — a small PDF,

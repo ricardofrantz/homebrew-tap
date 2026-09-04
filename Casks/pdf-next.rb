@@ -13,8 +13,6 @@ cask "pdf-next" do
     strategy :github_latest
   end
 
-  depends_on macos: ">= :big_sur"
-
   app "pdf-next.app"
   binary "#{appdir}/pdf-next.app/Contents/MacOS/pdf-next"
 
