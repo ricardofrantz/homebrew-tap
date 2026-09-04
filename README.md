@@ -3,12 +3,15 @@
 Homebrew packages for my own software.
 
 ```sh
-brew tap ricardofrantz/tap
-brew install --cask --no-quarantine pdf-next
+brew install --cask ricardofrantz/tap/pdf-next
+xattr -dr com.apple.quarantine /Applications/pdf-next.app
 ```
 
-`--no-quarantine` is needed while the app is unsigned; without it macOS
-refuses the first launch. See the cask for the alternative.
+The second line is needed while the app is unsigned: macOS quarantines
+anything downloaded and refuses the first launch. Homebrew used to offer
+`--no-quarantine` for this and removed it in 5.0, deliberately — it will not
+help you past a Gatekeeper check any more. Run it again after an upgrade,
+which installs a fresh copy.
 
 ## What is here
 
@@ -17,4 +20,4 @@ refuses the first launch. See the cask for the alternative.
   file changing on disk. Built for the LaTeX and Typst compile loop.
 
 The casks follow the upstream releases; a workflow in this repository checks
-once a day and opens the version bump itself.
+once a day and commits the version bump itself.

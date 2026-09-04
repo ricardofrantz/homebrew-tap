@@ -16,7 +16,7 @@ cask "pdf-next" do
   depends_on macos: ">= :big_sur"
 
   app "pdf-next.app"
-  binary "#{appdir}/pdf-next.app/Contents/MacOS/pdf-next", target: "pdf-next"
+  binary "#{appdir}/pdf-next.app/Contents/MacOS/pdf-next"
 
   zap trash: [
     "~/Library/Application Support/dev.frantz.pdf-next",
@@ -27,17 +27,12 @@ cask "pdf-next" do
     "~/Library/WebKit/dev.frantz.pdf-next",
   ]
 
-  caveats do
-    print <<~EOS
-      pdf-next is not code signed, so macOS holds it in quarantine. Either
-      install with
+  caveats <<~EOS
+    pdf-next is not signed or notarized yet, so macOS quarantines it and the
+    first launch is refused. Let this copy through once:
 
-        brew install --cask --no-quarantine ricardofrantz/tap/pdf-next
+      xattr -dr com.apple.quarantine "#{appdir}/pdf-next.app"
 
-      or, after a normal install, let it through once:
-
-        xattr -d com.apple.quarantine /Applications/pdf-next.app
-
-    EOS
-  end
+    Repeat it after an upgrade, which installs a fresh copy.
+  EOS
 end
